@@ -376,3 +376,45 @@ winner contract (MkTrick card1 card2 card3 card4) =
 -- (Gets really lengthy)
 isValid :: Contract -> Trick -> Bool
 isValid = undefined
+
+-- -- TASK
+-- -- Check if a Trick could have been played according to the rules of Belote
+-- isValid :: Contract -> Trick -> Bool
+-- isValid contract (MkTrick card1 card2 card3 card4) =
+--   isValidCard card2 card1 &&  -- Card 2 must follow card 1
+--   isValidCard card3 card1 &&  -- Card 3 must follow card 1
+--   isValidCard card4 card1     -- Card 4 must follow card 1
+--   where
+--     -- Get the suit of a card
+--     getSuit (MkCard _ suit) = suit
+--
+--     -- Check if a card is valid based on the leading card
+--     isValidCard :: Card -> Card -> Bool
+--     isValidCard currentCard leadingCard =
+--       let currentSuit = getSuit currentCard
+--           leadingSuit = getSuit leadingCard
+--           followsLeadingSuit = currentSuit `suitEquals` leadingSuit
+--           mustFollowSuit = isTrump contract leadingCard  -- Check if the leading card is a trump
+--       in
+--         -- The card must follow the leading suit if possible
+--         followsLeadingSuit ||
+--         -- If the player can't follow suit, they must play a trump card if possible
+--         (not followsLeadingSuit && isTrump contract currentCard) ||
+--         -- If neither condition is met, the card is valid
+--         True
+--
+-- -- Example
+-- exampleContract :: Contract
+-- exampleContract = Trumps Spades
+--
+-- exampleTrick :: Trick
+-- exampleTrick = MkTrick exampleCard1 exampleCard2 exampleCard3 exampleCard4
+--   where
+--     exampleCard1, exampleCard2, exampleCard3, exampleCard4 :: Card
+--     exampleCard1 = MkCard Ace Spades
+--     exampleCard2 = MkCard Jack Hearts
+--     exampleCard3 = MkCard King Spades
+--     exampleCard4 = MkCard Seven Diamonds
+--
+-- -- >>> isValid exampleContract exampleTrick
+-- -- True
