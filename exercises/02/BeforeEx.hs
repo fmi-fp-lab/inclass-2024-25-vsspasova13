@@ -168,11 +168,15 @@ multNat (Succ n) m = addNat m (multNat n m)
 -- implement both of addNat and multNat by passing suitable arguments? What are those arguments?
 --
 foldNat :: (Nat -> Nat -> Nat) -> Nat -> Nat -> Nat
-foldNat f m n = undefined
+foldNat _ Zero m = m
+foldNat f (Succ n) m = foldNat f n m
 --
 -- If your function is "good enough" you should also be able to implement exponentiation using it.
--- expNat :: Nat -> Nat -> Nat
--- expNat = undefined
+expNat :: Nat -> Nat -> Nat
+expNat Zero _ = Zero
+expNat m Zero = undefined
+expNat n (Succ m) = expNat n m 
+
 --
 -- Can you also implement
 -- natToInteger :: Nat -> Integer
