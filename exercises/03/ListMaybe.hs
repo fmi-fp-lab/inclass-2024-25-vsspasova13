@@ -113,7 +113,8 @@ safeHead' [] = []
 -- >>> listFromRange 8 6
 -- []
 listFromRange :: Integer -> Integer -> [Integer]
-listFromRange = undefined
+listFromRange a b = if a > b then []
+                    else a : (listFromRange (a + 1) b)
 
 -- EXERCISE
 -- Multiply all the elements of a list
@@ -123,12 +124,14 @@ listFromRange = undefined
 -- >>> product []
 -- 1
 product :: [Integer] -> Integer
-product = undefined
+product [] = 1
+product (a : xs) = a * (product xs)
 
 -- EXERCISE
 -- Implement factorial with prod and listFromRange
 fact :: Integer -> Integer
-fact = undefined
+fact 1 = 1
+fact x = product (listFromRange 1 x);
 
 -- EXERCISE
 -- Return a list of the numbers that divide the given number.
@@ -139,8 +142,13 @@ fact = undefined
 -- [1,2,4,8,16,32,64]
 -- >>> divisors 24
 -- [1,2,3,4,6,8,12,24]
+
+f :: Integer -> Integer -> [Integer]
+f x i =  undefined
+
 divisors :: Integer -> [Integer]
-divisors = undefined
+divisors 1 = [1]
+divisors x = undefined
 
 -- EXERCISE
 -- Implement prime number checking using listFromRange and divisors
@@ -160,7 +168,9 @@ isPrime = undefined
 -- >>> lastMaybe [1,2,3]
 -- Just 3
 lastMaybe :: [a] -> Maybe a
-lastMaybe = undefined
+lastMaybe [] = Nothing
+lastMaybe [a] = Just a
+lastMaybe (a : xs) = lastMaybe xs
 
 -- EXERCISE
 -- Calculate the length of a list.
@@ -170,7 +180,8 @@ lastMaybe = undefined
 -- >>> length []
 -- 0
 length :: [a] -> Integer
-length = undefined
+length [] = 0
+length (a : xs) = 1 + (length xs)
 
 -- EXERCISE
 -- Return the nth element from a list (we count from 0).
@@ -181,7 +192,11 @@ length = undefined
 -- >>> ix 3 [1,42,69]
 -- Nothing
 ix :: Integer -> [a] -> Maybe a
-ix = undefined
+ix n [] = Nothing
+ix 0 (a : xs) = Just a
+ix n (a : xs) = if n >= length (a : xs) then Nothing
+                else (ix (n - 1) xs)
+
 
 -- EXERCISE
 -- "Drop" the first n elements of a list.
@@ -192,7 +207,8 @@ ix = undefined
 -- >>> drop 20 $ listFromRange 1 10
 -- []
 drop :: Integer -> [a] -> [a]
-drop = undefined
+drop n (a : xs) = if n > length (a : xs) then []
+                  else undefined
 
 -- EXERCISE
 -- "Take" the first n elements of a list.
