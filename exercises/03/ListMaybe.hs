@@ -144,11 +144,13 @@ fact x = product (listFromRange 1 x);
 -- [1,2,3,4,6,8,12,24]
 
 f :: Integer -> Integer -> [Integer]
-f x i =  undefined
+f x i = if i == x then [x]
+        else  if (x `rem` i == 0) then i : (f x (i + 1)) 
+        else (f x (i + 1)) 
 
 divisors :: Integer -> [Integer]
 divisors 1 = [1]
-divisors x = undefined
+divisors x = f x 1
 
 -- EXERCISE
 -- Implement prime number checking using listFromRange and divisors
@@ -158,7 +160,7 @@ divisors x = undefined
 -- >>> isPrime 8
 -- False
 isPrime :: Integer -> Bool
-isPrime = undefined
+isPrime x = sumList (divisors x) == x + 1
 
 -- EXERCISE
 -- Get the last element in a list.
@@ -206,9 +208,11 @@ ix n (a : xs) = if n >= length (a : xs) then Nothing
 -- [6,7,8,9,10]
 -- >>> drop 20 $ listFromRange 1 10
 -- []
+
 drop :: Integer -> [a] -> [a]
 drop n (a : xs) = if n > length (a : xs) then []
-                  else undefined
+                  else if (n == 1) then xs
+                  else (drop (n-1) xs)
 
 -- EXERCISE
 -- "Take" the first n elements of a list.
@@ -219,7 +223,9 @@ drop n (a : xs) = if n > length (a : xs) then []
 -- >>> take 20 $ listFromRange 1 10
 -- [1,2,3,4,5,6,7,8,9,10]
 take :: Integer -> [a] -> [a]
-take = undefined
+take n (a : xs) = if n == 0 then []
+                  else if n > (length (a : xs)) then (a : xs)
+                  else a : (take (n - 1) xs)
 
 -- EXERCISE
 -- Append one list to another. append [1,2,3] [4,5,6] == [1,2,3,4,5,6]
@@ -234,7 +240,10 @@ take = undefined
 -- >>> append [] [4,5,6]
 -- [4,5,6]
 append :: [a] -> [a] -> [a]
-append = undefined
+append [] [] = []
+append [] (b : ys) = b : (append [] ys)
+append (a : xs) (b : ys) = a : (append xs (b : ys))
+
 
 -- EXERCISE
 -- Concatenate all the lists together.
@@ -246,7 +255,7 @@ append = undefined
 -- >>> concat []
 -- []
 concat :: [[a]] -> [a]
-concat = undefined
+concat =undefined
 
 -- EXERCISE
 -- Reverse a list. It's fine to do this however you like.
