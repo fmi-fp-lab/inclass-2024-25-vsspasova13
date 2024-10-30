@@ -117,7 +117,7 @@ product' = foldr 1 (*)
 -- >>> natToInteger $ Suc $ Suc $ Suc Zero
 -- 3
 natToInteger :: Nat -> Integer
-natToInteger = undefined
+natToInteger  = foldNat 0 (+ 1) 
 
 -- EXERCISE
 -- Implement exponentiation(n ^ m) using foldNat.
@@ -125,7 +125,7 @@ natToInteger = undefined
 -- >>> natToInteger $ expNat (integerToNat 2) (integerToNat 10)
 -- 1024
 expNat :: Nat -> Nat -> Nat
-expNat = undefined
+expNat n m = foldNat (Succ Zero) (\x -> multNat x n) m
 
 ---------------
 -- EXERCISES --
@@ -139,7 +139,8 @@ expNat = undefined
 -- >>> and [True, True]
 -- True
 and :: [Bool] -> Bool
-and = undefined
+and  = foldr True (&&) 
+
 
 -- EXERCISE
 -- Implement or using foldr
@@ -149,7 +150,7 @@ and = undefined
 -- >>> or [True, True]
 -- True
 or :: [Bool] -> Bool
-or = undefined
+or = foldr False (||)
 
 -- EXERCISE
 -- Implement length using foldr
@@ -159,13 +160,13 @@ or = undefined
 -- >>> length []
 -- 0
 length :: [a] -> Integer
-length = undefined
+length  = foldr 0 (\x l -> 1 + l) 
 
 -- EXERCISE
 -- Implement (++) using foldr
 -- >>> [1,2,3]
 (++) :: [a] -> [a] -> [a]
-(++) = undefined
+(++) a b = foldr b (:) a
 
 -- EXERCISE
 -- Implement concat using foldr
@@ -176,7 +177,7 @@ length = undefined
 -- >>> concat []
 -- []
 concat :: [[a]] -> [a]
-concat = undefined
+concat = foldr [] (++) 
 
 -- EXERCISE
 -- Implement reverse using foldr (it's fine to do this in O(n^2)
@@ -186,7 +187,7 @@ concat = undefined
 -- >>> reverse []
 -- []
 reverse :: [a] -> [a]
-reverse = undefined
+reverse = foldr [] (\x xs -> xs ++ [x])
 
 -- EXERCISE
 -- Implement map using foldr
@@ -198,8 +199,7 @@ reverse = undefined
 -- >>> map (\x -> (3,x)) [1,2,3] -- same as megaPair 3
 -- [(3,1),(3,2),(3,3)]
 map :: (a -> b) -> [a] -> [b]
-map = undefined
-
+map f = foldr [] (\x xs -> (f x) : xs)
 -- EXERCISE
 -- Implement filter using foldr
 -- EXAMPLES
@@ -212,7 +212,7 @@ map = undefined
 -- >>> filter isPrime [1..20]
 -- [2,3,5,7,11,13,17,19]
 filter :: (a -> Bool) -> [a] -> [a]
-filter = undefined
+filter p = foldr [] (\x xs -> if (p x) then (x : xs) else xs) 
 
 -- EXERCISE
 -- Implement null using foldr
@@ -222,7 +222,7 @@ filter = undefined
 -- >>> null [1]
 -- False
 null :: [a] -> Bool
-null = undefined
+null = foldr True (\x  xs-> False )
 
 -- EXERCISE
 -- Implement headMaybe using foldr
@@ -232,7 +232,7 @@ null = undefined
 -- >>> headMaybe [1,2,3]
 -- Just 1
 headMaybe :: [a] -> Maybe a
-headMaybe = undefined
+headMaybe = foldr Nothing (\x xs -> Just x)
 
 -- EXERCISE
 -- Implement a function that splits a list into two based on a predicate p
@@ -242,8 +242,15 @@ headMaybe = undefined
 -- ([1,2,3,4],[5,6,7,8,9,10])
 -- >>> partition even [1..10]
 -- ([2,4,6,8,10],[1,3,5,7,9])
+
+helper :: [a] -> [a] -> ([a],[a])
+helper [] [] = ([], [])
+helper (a:xs)  []= ([a],[])
+helper [] (a:xs) = ([],[a])
+
 partition :: (a -> Bool) -> [a] -> ([a], [a])
-partition = undefined
+partition p [] =  ([],[])
+partition p xs = ((filter p xs), (filter (\x -> not (p x)) xs))
 
 -- EXERCISE
 -- Implement partition using foldr
@@ -253,7 +260,7 @@ partition = undefined
 -- >>> partitionfoldr even [1..10]
 -- ([2,4,6,8,10],[1,3,5,7,9])
 partitionfoldr :: (a -> Bool) -> [a] -> ([a], [a])
-partitionfoldr = undefined
+partitionfoldr p xs = foldr ([],[]) (\x xs -> if (p x) then ((x : xs), []) else ([], (x : xs))) xs
 
 -- EXERCISE
 -- Implement validateList using foldr.
