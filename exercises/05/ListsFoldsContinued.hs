@@ -121,7 +121,17 @@ data Digit
 -- >>> parseDigit 'c'
 -- Nothing
 parseDigit :: Char -> Maybe Digit
-parseDigit = undefined
+parseDigit '0' = Just DZero
+parseDigit '1' = Just One
+parseDigit '2' = Just Two
+parseDigit '3' = Just Three
+parseDigit '4' = Just Four
+parseDigit '5' = Just Five
+parseDigit '6' = Just Six
+parseDigit '7' = Just Seven
+parseDigit '8' = Just Eight
+parseDigit '9' = Just Nine
+parseDigit _ = Nothing
 
 -- EXERCISE
 -- See if all the values in a list xs are Just, returning Just xs only if they are.
@@ -139,8 +149,21 @@ parseDigit = undefined
 -- Nothing
 -- >>> validateList [Just 42, Just 6, Nothing]
 -- Nothing
+
+isNothing :: Maybe a -> Bool
+isNothing Nothing = True
+isNothing _ = False
+
+justX :: Maybe a -> a
+justX (Just a) = a
+
 validateList :: [Maybe a] -> Maybe [a]
-validateList = undefined
+validateList = foldr (\x xs -> case (x, xs) of
+      (Nothing, _) -> Nothing
+      (Just a, Just b) -> Just (a : b)
+      (_, Nothing) -> Nothing) (Just [])
+
+
 
 -- EXERCISE
 -- You often have a collection (list) of things, for each of which you want to
@@ -161,7 +184,9 @@ validateList = undefined
 -- >>> traverseListMaybe (8 `safeDiv`) [3,2]
 -- Just [2,4]
 traverseListMaybe :: (a -> Maybe b) -> [a] -> Maybe [b]
-traverseListMaybe = undefined
+traverseListMaybe funct = foldr (\x xs  -> case ((funct x), xs) of
+            (Just a, Just b) -> Just (a:b)
+            (Nothing, _) -> Nothing) (Just [])
 
 -- EXERCISE
 -- Convert a list of digits to a number.
@@ -178,11 +203,15 @@ traverseListMaybe = undefined
 -- 120
 -- >>> digitsToNumber [DZero,One,Two,DZero]
 -- 120
+
 digitsToNumber :: [Digit] -> Integer
-digitsToNumber = undefined
+digitsToNumber [DZero] = 0
+digitsToNumber l = go l 0
   where
     -- for some reason, we often call helpers in haskell "go", as in "go do the thing"
-    go = undefined
+    go :: [Digit] -> Integer -> Integer
+    go [] acc = acc
+    go (x:xs) acc = go xs (acc * 10 + (fromIntegral (fromEnum x)))
 
 -- EXERCISE
 -- Combine the previous functions to parse a number.
@@ -201,6 +230,9 @@ digitsToNumber = undefined
 -- Nothing
 parseNumber :: String -> Maybe Integer
 parseNumber = undefined
+  where 
+    go :: String -> Integer -> Maybe Integer
+    go (x : xs) = undefined
 
 -- EXERCISE
 -- Notice how in parseNumber, in the Nothing case we returned Nothing,
@@ -214,7 +246,8 @@ parseNumber = undefined
 -- >>> maybeMap succ Nothing
 -- Nothing
 maybeMap :: (a -> b) -> Maybe a -> Maybe b
-maybeMap = undefined
+maybeMap _ Nothing = Nothing
+maybeMap f (Just x) = Just (f x)
 
 -- EXERCISE
 -- Reverse a list using foldl.
@@ -223,8 +256,7 @@ maybeMap = undefined
 -- >>> reverse' [1,2,3]
 -- [3,2,1]
 reverse :: [a] -> [a]
-reverse = undefined
-
+reverse = foldl (flip (:)) []
 -- EXERCISE
 -- A smaller version of one of the tasks from a FP exam.
 -- We have instructions for a "stack machine" - so something that keeps a stack for memory (so a list)
