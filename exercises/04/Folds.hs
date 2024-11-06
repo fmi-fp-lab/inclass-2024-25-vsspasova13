@@ -260,7 +260,7 @@ partition p xs = ((filter p xs), (filter (\x -> not (p x)) xs))
 -- >>> partitionfoldr even [1..10]
 -- ([2,4,6,8,10],[1,3,5,7,9])
 partitionfoldr :: (a -> Bool) -> [a] -> ([a], [a])
-partitionfoldr p xs = foldr ([],[]) (\x xs -> if (p x) then ((x : xs), []) else ([], (x : xs))) xs
+partitionfoldr p xs = foldr ([],[]) (\x (ts,fs) -> if (p x) then ((x : ts), fs) else (ts, (x : fs))) xs
 
 -- EXERCISE
 -- Implement validateList using foldr.
@@ -275,20 +275,32 @@ partitionfoldr p xs = foldr ([],[]) (\x xs -> if (p x) then ((x : xs), []) else 
 -- Nothin
 -- >>> validateList [Just 42, Just 6, Nothing]
 -- Nothing
+isNothing :: Maybe a -> Bool
+isNothing Nothing = True
+isNothing _ = False
+
+fromJust :: Maybe a -> a
+fromJust (Just x) = x
+fromJust Nothing  = error "fromJust: Nothing"
+
 validateList :: [Maybe a] -> Maybe [a]
-validateList = undefined
+validateList xs = foldr Nothing (\x acc -> if(isNothing x) then Nothing else if (isNothing acc) then Nothing else Just (fromJust x : fromJust acc)) xs
 
 -- EXERCISE
 -- Look at the recursor for nats - foldNat. In there we replaced @Nat@'s constructors with "things".
 -- Think about how a fold for tuples should look like, and implement it.
 -- Does this function remind you of another function we've previously implemented?
--- foldTuple :: ?
--- foldTuple = undefined
+foldTuple :: b -> (a -> b -> b ) -> (a, a) -> b  
+--foldTuple bazovo rekursivno () = bazovo
+foldTuple bazovo rekursivno (x, y) = rekursivno x (rekursivno y bazovo)
+--nzzzz
+
 
 -- EXERCISE
 -- Same as above, but this time for Maybe
--- foldMaybe :: ?
--- foldMaybe = undefined
+foldMaybe :: b -> (a -> b) -> Maybe a -> b
+foldMaybe bazovo rekursivno Nothing = bazovo
+foldMaybe bazovo rekursivno (Just a) = rekursivno a
 
 -- EXERCISE
 -- Same as above, but this time for Either
