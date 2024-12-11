@@ -113,7 +113,8 @@ safeHead' [] = []
 -- >>> listFromRange 8 6
 -- []
 listFromRange :: Integer -> Integer -> [Integer]
-listFromRange = undefined
+listFromRange a b = if a > b then []
+                    else a : (listFromRange (a + 1) b)
 
 -- EXERCISE
 -- Multiply all the elements of a list
@@ -123,12 +124,14 @@ listFromRange = undefined
 -- >>> product []
 -- 1
 product :: [Integer] -> Integer
-product = undefined
+product [] = 1
+product (a : xs) = a * (product xs)
 
 -- EXERCISE
 -- Implement factorial with prod and listFromRange
 fact :: Integer -> Integer
-fact = undefined
+fact 1 = 1
+fact x = product (listFromRange 1 x);
 
 -- EXERCISE
 -- Return a list of the numbers that divide the given number.
@@ -139,8 +142,15 @@ fact = undefined
 -- [1,2,4,8,16,32,64]
 -- >>> divisors 24
 -- [1,2,3,4,6,8,12,24]
+
+f :: Integer -> Integer -> [Integer]
+f x i = if i == x then [x]
+        else  if (x `rem` i == 0) then i : (f x (i + 1)) 
+        else (f x (i + 1)) 
+
 divisors :: Integer -> [Integer]
-divisors = undefined
+divisors 1 = [1]
+divisors x = f x 1
 
 -- EXERCISE
 -- Implement prime number checking using listFromRange and divisors
@@ -150,7 +160,7 @@ divisors = undefined
 -- >>> isPrime 8
 -- False
 isPrime :: Integer -> Bool
-isPrime = undefined
+isPrime x = sumList (divisors x) == x + 1
 
 -- EXERCISE
 -- Get the last element in a list.
@@ -160,7 +170,9 @@ isPrime = undefined
 -- >>> lastMaybe [1,2,3]
 -- Just 3
 lastMaybe :: [a] -> Maybe a
-lastMaybe = undefined
+lastMaybe [] = Nothing
+lastMaybe [a] = Just a
+lastMaybe (a : xs) = lastMaybe xs
 
 -- EXERCISE
 -- Calculate the length of a list.
@@ -170,7 +182,8 @@ lastMaybe = undefined
 -- >>> length []
 -- 0
 length :: [a] -> Integer
-length = undefined
+length [] = 0
+length (a : xs) = 1 + (length xs)
 
 -- EXERCISE
 -- Return the nth element from a list (we count from 0).
@@ -181,7 +194,11 @@ length = undefined
 -- >>> ix 3 [1,42,69]
 -- Nothing
 ix :: Integer -> [a] -> Maybe a
-ix = undefined
+ix n [] = Nothing
+ix 0 (a : xs) = Just a
+ix n (a : xs) = if n >= length (a : xs) then Nothing
+                else (ix (n - 1) xs)
+
 
 -- EXERCISE
 -- "Drop" the first n elements of a list.
@@ -191,8 +208,11 @@ ix = undefined
 -- [6,7,8,9,10]
 -- >>> drop 20 $ listFromRange 1 10
 -- []
+
 drop :: Integer -> [a] -> [a]
-drop = undefined
+drop n (a : xs) = if n > length (a : xs) then []
+                  else if (n == 1) then xs
+                  else (drop (n-1) xs)
 
 -- EXERCISE
 -- "Take" the first n elements of a list.
@@ -203,7 +223,9 @@ drop = undefined
 -- >>> take 20 $ listFromRange 1 10
 -- [1,2,3,4,5,6,7,8,9,10]
 take :: Integer -> [a] -> [a]
-take = undefined
+take n (a : xs) = if n == 0 then []
+                  else if n > (length (a : xs)) then (a : xs)
+                  else a : (take (n - 1) xs)
 
 -- EXERCISE
 -- Append one list to another. append [1,2,3] [4,5,6] == [1,2,3,4,5,6]
@@ -218,7 +240,10 @@ take = undefined
 -- >>> append [] [4,5,6]
 -- [4,5,6]
 append :: [a] -> [a] -> [a]
-append = undefined
+append [] [] = []
+append [] (b : ys) = b : (append [] ys)
+append (a : xs) (b : ys) = a : (append xs (b : ys))
+
 
 -- EXERCISE
 -- Concatenate all the lists together.
@@ -230,7 +255,7 @@ append = undefined
 -- >>> concat []
 -- []
 concat :: [[a]] -> [a]
-concat = undefined
+concat =undefined
 
 -- EXERCISE
 -- Reverse a list. It's fine to do this however you like.
